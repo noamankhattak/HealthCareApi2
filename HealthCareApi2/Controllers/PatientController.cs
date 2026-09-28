@@ -1,0 +1,61 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using HealthcareApi.Services;
+using HealthcareApi.Models;
+using HealthCareApi.Services;
+
+namespace HealthcareApi.controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+
+public class PatientController : ControllerBase
+{
+    private readonly IPatientService PatientService;
+    public PatientController (IPatientService PatientService)
+    {
+        this.PatientService = PatientService;
+        
+    }
+
+    [HttpGet]
+    public ActionResult<List<Patient>> GetPatients()
+    {
+        return Ok(PatientService.GetPatients());
+    }
+
+    [HttpPost]
+    public ActionResult createpatient(Patient patient)
+    {           
+        PatientService.CreatePatient(patient);
+        return CreatedAtAction(
+          nameof(GetPatient),
+           new { id = patient.Id },
+               patient
+              );
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Patient> GetPatient(int id)
+    {
+        var patients = PatientService.GetPatients();
+
+        var patient = patients.FirstOrDefault(p => p.Id == id);
+
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(patient);
+    }
+    [HttpPut]
+    public string UpdatePatient(Patient patient)
+    {
+        return PatientService.UpdatePatient(patient);
+    }
+    [HttpDelete("{id}")]
+        public string DeletePatient(int Id)
+    {
+        return PatientService.DeletePatient(Id);
+    }
+}
