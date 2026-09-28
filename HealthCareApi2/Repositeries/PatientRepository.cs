@@ -28,9 +28,17 @@ public class PatientRepository : IPatientRepositery
     }
     public bool DeletePatient(int Id)
     {
-        var patient = PatientRepository.GetPatientById(Id)
+        var patient = PatientRepository.GetPatientById(Id);
+
         if (patient == null)
-        
-        
+        {
+            return false;
+        }
+
+        PatientRepository.DeletePatient(Id);
+
+        return true;
+
+
     }
  }
