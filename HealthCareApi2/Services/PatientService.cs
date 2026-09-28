@@ -29,9 +29,17 @@ public class PatientService : IPatientService
     {
         return patientRepository.GetPatientById(Id);
     }
-    public string DeletePatient(int Id)
+    public bool DeletePatient(int Id)
     {
+        var patient = patientRepository.GetPatientById(Id);
+
+        if (patient == null)
+        {
+            return false;
+        }
+
         patientRepository.DeletePatient(Id);
-        return $"Patient with ID {Id} Deleted";
+
+        return true;
     }
 }

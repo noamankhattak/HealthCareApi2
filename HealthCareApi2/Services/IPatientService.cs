@@ -7,6 +7,6 @@ namespace HealthCareApi.Services
         List<Patient> GetPatients();
         string UpdatePatient(Patient patient);
         Patient? GetPatientById(int Id);
-        string DeletePatient(int Id);
+        bool DeletePatient(int Id);
     }
 }

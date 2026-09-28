@@ -53,9 +53,15 @@ public class PatientController : ControllerBase
     {
         return PatientService.UpdatePatient(patient);
     }
+
     [HttpDelete("{id}")]
-        public string DeletePatient(int Id)
+        public IActionResult DeletePatient(int Id)
     {
-        return PatientService.DeletePatient(Id);
+        PatientService.DeletePatient(Id);
+        var deleted = PatientService.DeletePatient(Id);
+        if (!deleted) {
+            return NotFound();
+        }
+        return NoContent();
     }
 }

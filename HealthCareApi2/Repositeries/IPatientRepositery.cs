@@ -8,5 +8,5 @@ public interface IPatientRepositery
     List<Patient> GetPatients();
     Patient? GetPatientById(int Id);
     void UpdatePatient(Patient patient);
-    bool DeletePatient(int Id);
+    void DeletePatient(int Id);
 }

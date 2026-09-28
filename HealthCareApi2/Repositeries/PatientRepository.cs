@@ -26,19 +26,15 @@ public class PatientRepository : IPatientRepositery
         context.Patients.Update(patient);
         context.SaveChanges();
     }
-    public bool DeletePatient(int Id)
+    public void DeletePatient(int id)
     {
-        var patient = PatientRepository.GetPatientById(Id);
+        var patient = context.Patients.Find(id);
 
-        if (patient == null)
+        if (patient != null)
         {
-            return false;
+            context.Patients.Remove(patient);
+            context.SaveChanges();
         }
-
-        PatientRepository.DeletePatient(Id);
-
-        return true;
-
-
     }
+       
  }
