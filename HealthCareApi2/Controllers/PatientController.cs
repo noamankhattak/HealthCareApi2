@@ -24,7 +24,7 @@ public class PatientController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult createpatient(Patient patient)
+    public ActionResult<Patient> createpatient(Patient patient)
     {           
         PatientService.CreatePatient(patient);
         return CreatedAtAction(
@@ -33,6 +33,7 @@ public class PatientController : ControllerBase
                patient
               );
     }
+    
 
     [HttpGet("{id}")]
     public ActionResult<Patient> GetPatient(int id)
@@ -49,9 +50,13 @@ public class PatientController : ControllerBase
         return Ok(patient);
     }
 
-    [HttpPut]
-    public IActionResult UpdatePatient(Patient patient)
+    [HttpPut("{id}")]
+    public IActionResult UpdatePatient(int id, Patient patient)
     {
+        if(id != patient.Id)
+        {
+            return BadRequest();
+        }
         var updated = PatientService.UpdatePatient(patient);
         if (!updated)
         {
