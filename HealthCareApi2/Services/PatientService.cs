@@ -20,11 +20,11 @@ public class PatientService : IPatientService
     {
         return patientRepository.GetPatients();
     }
-    public string UpdatePatient(Patient patient)
+    public bool UpdatePatient(Patient patient)
     {
-        patientRepository.UpdatePatient(patient);
-        return $"Patient Updated: {patient.Name}";
+        return patientRepository.UpdatePatient(patient);
     }
+
     public Patient? GetPatientById(int Id)
     {
         return patientRepository.GetPatientById(Id);

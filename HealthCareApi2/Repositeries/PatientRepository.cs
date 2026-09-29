@@ -21,10 +21,22 @@ public class PatientRepository : IPatientRepositery
     {
         return context.Patients.ToList();
     }
-    public void UpdatePatient(Patient patient)
+    public bool UpdatePatient(Patient patient)
     {
-        context.Patients.Update(patient);
-        context.SaveChanges();
+        var existingPatient = context.Patients.Find(patient.Id);
+
+        if (existingPatient == null)
+        {
+            return false;
+        }
+
+            existingPatient.Name = patient.Name;
+            existingPatient.Age = patient.Age;
+            existingPatient.Phone = patient.Phone;
+
+            context.SaveChanges();
+        return true;
+        
     }
     public void DeletePatient(int id)
     {

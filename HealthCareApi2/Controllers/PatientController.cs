@@ -48,10 +48,16 @@ public class PatientController : ControllerBase
 
         return Ok(patient);
     }
+
     [HttpPut]
-    public string UpdatePatient(Patient patient)
+    public IActionResult UpdatePatient(Patient patient)
     {
-        return PatientService.UpdatePatient(patient);
+        var updated = PatientService.UpdatePatient(patient);
+        if (!updated)
+        {
+            return NotFound();
+        }
+        return NoContent();
     }
 
     [HttpDelete("{id}")]

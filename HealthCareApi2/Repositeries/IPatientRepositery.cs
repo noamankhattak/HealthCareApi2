@@ -7,6 +7,6 @@ public interface IPatientRepositery
     void AddPatient(Patient patient);
     List<Patient> GetPatients();
     Patient? GetPatientById(int Id);
-    void UpdatePatient(Patient patient);
+    bool UpdatePatient(Patient patient);
     void DeletePatient(int Id);
 }
