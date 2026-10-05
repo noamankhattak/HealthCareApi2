@@ -1,8 +1,8 @@
-﻿using HealthcareApi.Models;
+﻿using HealthCareApi2.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace HealthcareApi.Data;
+namespace HealthCareApi2.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {

@@ -22,4 +22,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HealthCareApi2.Application\HealthCareApi2.Application.csproj" />
+    <ProjectReference Include="..\HealthCareApi2.Infrastructure\HealthCareApi2.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

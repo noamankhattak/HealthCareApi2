@@ -1,13 +1,12 @@
-﻿using HealthcareApi.Models;
-using HealthCareApi.Services;
-using HealthcareApi.Repositeries;
+﻿using HealthCareApi2.Domain.Entities;
+using HealthCareApi2.Application.Repositories;
 
-namespace HealthcareApi.Services;
+namespace HealthCareApi2.Application.Services;
 
 public class PatientService : IPatientService
 {
-    private readonly IPatientRepositery patientRepository;
-    public PatientService(IPatientRepositery patientRepository)
+    private readonly IPatientRepository patientRepository;
+    public PatientService(IPatientRepository patientRepository)
     {
         this.patientRepository = patientRepository;
     }
@@ -37,9 +36,11 @@ public class PatientService : IPatientService
         {
             return false;
         }
+        else
+        {
+            patientRepository.DeletePatient(patient);
 
-        patientRepository.DeletePatient(Id);
-
-        return true;
+            return true;
+        }
     }
 }

@@ -1,7 +1,8 @@
-﻿using HealthcareApi.Data;
-using HealthcareApi.Models;
-namespace HealthcareApi.Repositeries;
-public class PatientRepository : IPatientRepositery
+﻿using HealthCareApi2.Infrastructure.Data;
+using HealthCareApi2.Domain.Entities;
+using HealthCareApi2.Application.Repositories;
+namespace HealthCareApi2.Infrastructure.Repositories;
+public class PatientRepository : IPatientRepository
 {
     private readonly AppDbContext context;
     public PatientRepository(AppDbContext context)
@@ -38,14 +39,17 @@ public class PatientRepository : IPatientRepositery
         return true;
         
     }
-    public void DeletePatient(int id)
+    public void DeletePatient(Patient patient)
     {
-        var patient = context.Patients.Find(id);
+       
 
-        if (patient != null)
+    
         {
             context.Patients.Remove(patient);
-            context.SaveChanges();
+            var changes = context.SaveChanges();
+            
+
+
         }
     }
        

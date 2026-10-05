@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using HealthcareApi.Services;
-using HealthcareApi.Models;
-using HealthCareApi.Services;
+using HealthCareApi2.Application.Services;
+using HealthCareApi2.Domain.Entities;
 
-namespace HealthcareApi.controllers;
+namespace HealthCareApi.controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -35,12 +34,12 @@ public class PatientController : ControllerBase
     }
     
 
-    [HttpGet("{id}")]
-    public ActionResult<Patient> GetPatient(int id)
+    [HttpGet("{Id}")]
+    public ActionResult<Patient> GetPatient(int Id)
     {
         var patients = PatientService.GetPatients();
 
-        var patient = patients.FirstOrDefault(p => p.Id == id);
+        var patient = patients.FirstOrDefault(p => p.Id == Id);
 
         if (patient == null)
         {
@@ -50,10 +49,10 @@ public class PatientController : ControllerBase
         return Ok(patient);
     }
 
-    [HttpPut("{id}")]
-    public IActionResult UpdatePatient(int id, Patient patient)
+    [HttpPut("{Id}")]
+    public IActionResult UpdatePatient(int Id, Patient patient)
     {
-        if(id != patient.Id)
+        if(Id != patient.Id)
         {
             return BadRequest();
         }
@@ -65,7 +64,7 @@ public class PatientController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{Id}")]
         public IActionResult DeletePatient(int Id)
     {
         PatientService.DeletePatient(Id);

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace HealthcareApi.Models;
+namespace HealthCareApi2.Domain.Entities;
 
 public class Patient
 {

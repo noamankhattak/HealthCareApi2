@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace HealthCareApi2.Migrations
+namespace HealthCareApi2.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
