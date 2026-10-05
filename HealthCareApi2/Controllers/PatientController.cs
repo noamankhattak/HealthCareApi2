@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using HealthcareApi.Services;
-using HealthcareApi.Models;
-using HealthCareApi.Services;
+using HealthCareApi2.Application.Services;
+using HealthCareApi2.Domain.Entities;
 
-namespace HealthcareApi.controllers;
+namespace HealthCareApi.controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -24,7 +23,7 @@ public class PatientController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult createpatient(Patient patient)
+    public ActionResult<Patient> createpatient(Patient patient)
     {           
         PatientService.CreatePatient(patient);
         return CreatedAtAction(
@@ -33,13 +32,14 @@ public class PatientController : ControllerBase
                patient
               );
     }
+    
 
-    [HttpGet("{id}")]
-    public ActionResult<Patient> GetPatient(int id)
+    [HttpGet("{Id}")]
+    public ActionResult<Patient> GetPatient(int Id)
     {
         var patients = PatientService.GetPatients();
 
-        var patient = patients.FirstOrDefault(p => p.Id == id);
+        var patient = patients.FirstOrDefault(p => p.Id == Id);
 
         if (patient == null)
         {
@@ -48,14 +48,30 @@ public class PatientController : ControllerBase
 
         return Ok(patient);
     }
-    [HttpPut]
-    public string UpdatePatient(Patient patient)
+
+    [HttpPut("{Id}")]
+    public IActionResult UpdatePatient(int Id, Patient patient)
     {
-        return PatientService.UpdatePatient(patient);
+        if(Id != patient.Id)
+        {
+            return BadRequest();
+        }
+        var updated = PatientService.UpdatePatient(patient);
+        if (!updated)
+        {
+            return NotFound();
+        }
+        return NoContent();
     }
-    [HttpDelete("{id}")]
-        public string DeletePatient(int Id)
+
+    [HttpDelete("{Id}")]
+        public IActionResult DeletePatient(int Id)
     {
-        return PatientService.DeletePatient(Id);
+        PatientService.DeletePatient(Id);
+        var deleted = PatientService.DeletePatient(Id);
+        if (!deleted) {
+            return NotFound();
+        }
+        return NoContent();
     }
 }
