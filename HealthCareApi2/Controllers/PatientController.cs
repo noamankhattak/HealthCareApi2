@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
 using HealthCareApi2.Application.Services;
 using HealthCareApi2.Domain.Entities;
+using HealthCareApi2.DTOs.Patients;
+using HealthCareApi2.Mappers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCareApi.controllers;
 
@@ -17,25 +20,40 @@ public class PatientController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<Patient>> GetPatients()
+    public ActionResult<List<PatientResponse>> GetPatients()
     {
-        return Ok(PatientService.GetPatients());
+        var patients = PatientService.GetPatients();
+
+        var response = patients
+       .Select(PatientMapper.ToResponse)
+       .ToList();
+
+
+        return Ok(response);
+        
     }
 
     [HttpPost]
-    public ActionResult<Patient> createpatient(Patient patient)
+    public ActionResult<PatientResponse> createpatient(CreatePatientRequest request)
     {           
+        var patient = PatientMapper.ToEntity(request);
+
+
         PatientService.CreatePatient(patient);
+
+        var resposne = PatientMapper.ToResponse(patient);
+
+
         return CreatedAtAction(
           nameof(GetPatient),
            new { id = patient.Id },
-               patient
+               resposne
               );
     }
     
 
     [HttpGet("{Id}")]
-    public ActionResult<Patient> GetPatient(int Id)
+    public ActionResult<PatientResponse> GetPatient(int Id)
     {
         var patients = PatientService.GetPatients();
 
@@ -46,16 +64,15 @@ public class PatientController : ControllerBase
             return NotFound();
         }
 
-        return Ok(patient);
+        var response = PatientMapper.ToResponse(patient);
+
+        return Ok(response);
     }
 
     [HttpPut("{Id}")]
-    public IActionResult UpdatePatient(int Id, Patient patient)
+    public IActionResult UpdatePatient(int Id, UpdatePatientRequest request)
     {
-        if(Id != patient.Id)
-        {
-            return BadRequest();
-        }
+        var patient = PatientMapper.ToEntity(request, Id);
         var updated = PatientService.UpdatePatient(patient);
         if (!updated)
         {
