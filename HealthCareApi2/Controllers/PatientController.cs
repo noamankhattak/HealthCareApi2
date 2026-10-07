@@ -1,6 +1,4 @@
-﻿using Azure;
-using HealthCareApi2.Application.Services;
-using HealthCareApi2.Domain.Entities;
+﻿using HealthCareApi2.Application.Services;
 using HealthCareApi2.DTOs.Patients;
 using HealthCareApi2.Mappers;
 using Microsoft.AspNetCore.Mvc;
