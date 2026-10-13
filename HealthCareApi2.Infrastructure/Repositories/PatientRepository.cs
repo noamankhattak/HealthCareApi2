@@ -18,25 +18,25 @@ public class PatientRepository : IPatientRepository
     {
         return context.Patients.Find(Id);
     }
+    public Patient? GetPatientByPhone(string phone)
+    {
+        return context.Patients.FirstOrDefault(p => p.Phone == phone);
+    }
     public List<Patient> GetPatients()
     {
         return context.Patients.ToList();
     }
-    public bool UpdatePatient(Patient patient)
+    public void UpdatePatient(Patient patient)
     {
-        var existingPatient = context.Patients.Find(patient.Id);
+        var existingPatient = context.Patients.Find(patient.Id)!;
 
-        if (existingPatient == null)
-        {
-            return false;
-        }
 
             existingPatient.Name = patient.Name;
             existingPatient.Age = patient.Age;
             existingPatient.Phone = patient.Phone;
 
             context.SaveChanges();
-        return true;
+     
         
     }
     public void DeletePatient(Patient patient)

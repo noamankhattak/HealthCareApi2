@@ -1,4 +1,5 @@
 ﻿using HealthCareApi2.Application.Services;
+using HealthCareApi2.Domain.Entities;
 using HealthCareApi2.DTOs.Patients;
 using HealthCareApi2.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,10 @@ namespace HealthCareApi.controllers;
 public class PatientController : ControllerBase
 {
     private readonly IPatientService PatientService;
-    public PatientController (IPatientService PatientService)
+    public PatientController(IPatientService PatientService)
     {
         this.PatientService = PatientService;
-        
+
     }
 
     [HttpGet]
@@ -28,12 +29,12 @@ public class PatientController : ControllerBase
 
 
         return Ok(response);
-        
+
     }
 
     [HttpPost]
     public ActionResult<PatientResponse> createpatient(CreatePatientRequest request)
-    {           
+    {
         var patient = PatientMapper.ToEntity(request);
 
 
@@ -43,50 +44,35 @@ public class PatientController : ControllerBase
 
 
         return CreatedAtAction(
-          nameof(GetPatient),
+          nameof(GetPatientById),
            new { id = patient.Id },
                resposne
               );
     }
-    
+
 
     [HttpGet("{Id}")]
-    public ActionResult<PatientResponse> GetPatient(int Id)
+    public ActionResult<PatientResponse> GetPatientById(int Id)
     {
-        var patients = PatientService.GetPatients();
+        var patient = PatientService.GetPatientById(Id);
 
-        var patient = patients.FirstOrDefault(p => p.Id == Id);
-
-        if (patient == null)
-        {
-            return NotFound();
-        }
-
-        var response = PatientMapper.ToResponse(patient);
-
-        return Ok(response);
+        return Ok(PatientMapper.ToResponse(patient));
     }
 
     [HttpPut("{Id}")]
     public IActionResult UpdatePatient(int Id, UpdatePatientRequest request)
     {
         var patient = PatientMapper.ToEntity(request, Id);
-        var updated = PatientService.UpdatePatient(patient);
-        if (!updated)
-        {
-            return NotFound();
-        }
+        PatientService.UpdatePatient(patient);
         return NoContent();
     }
 
     [HttpDelete("{Id}")]
-        public IActionResult DeletePatient(int Id)
+    public IActionResult DeletePatient(int Id)
     {
         PatientService.DeletePatient(Id);
-        var deleted = PatientService.DeletePatient(Id);
-        if (!deleted) {
-            return NotFound();
-        }
+
         return NoContent();
     }
+
 }
