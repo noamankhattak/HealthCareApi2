@@ -1,5 +1,4 @@
 ﻿using HealthCareApi2.Application.Services;
-using HealthCareApi2.Domain.Entities;
 using HealthCareApi2.DTOs.Patients;
 using HealthCareApi2.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +18,9 @@ public class PatientController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<PatientResponse>> GetPatients()
+    public async Task <ActionResult<List<PatientResponse>>> GetPatients(CancellationToken ct )
     {
-        var patients = PatientService.GetPatients();
+        var patients = await PatientService.GetPatientsAsync(ct);
 
         var response = patients
        .Select(PatientMapper.ToResponse)
@@ -33,12 +32,12 @@ public class PatientController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<PatientResponse> createpatient(CreatePatientRequest request)
+    public async Task <ActionResult<PatientResponse>> createpatient(CreatePatientRequest request, CancellationToken ct)
     {
         var patient = PatientMapper.ToEntity(request);
 
 
-        PatientService.CreatePatient(patient);
+        await PatientService.CreatePatientAsync(patient, ct);
 
         var resposne = PatientMapper.ToResponse(patient);
 
@@ -52,25 +51,25 @@ public class PatientController : ControllerBase
 
 
     [HttpGet("{Id}")]
-    public ActionResult<PatientResponse> GetPatientById(int Id)
+    public async Task <ActionResult<PatientResponse>> GetPatientById(int Id, CancellationToken ct)
     {
-        var patient = PatientService.GetPatientById(Id);
+        var patient = await PatientService.GetPatientByIdAsync(Id, ct);
 
         return Ok(PatientMapper.ToResponse(patient));
     }
 
     [HttpPut("{Id}")]
-    public IActionResult UpdatePatient(int Id, UpdatePatientRequest request)
+    public async Task <IActionResult> UpdatePatient(int Id, UpdatePatientRequest request, CancellationToken ct)
     {
         var patient = PatientMapper.ToEntity(request, Id);
-        PatientService.UpdatePatient(patient);
+        await PatientService.UpdatePatientAsync(patient, ct);
         return NoContent();
     }
 
     [HttpDelete("{Id}")]
-    public IActionResult DeletePatient(int Id)
+    public async Task <IActionResult> DeletePatient(int Id, CancellationToken ct)
     {
-        PatientService.DeletePatient(Id);
+        await PatientService.DeletePatientAsync(Id, ct);
 
         return NoContent();
     }
