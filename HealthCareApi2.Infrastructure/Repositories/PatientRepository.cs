@@ -1,4 +1,5 @@
-﻿using HealthCareApi2.Infrastructure.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using HealthCareApi2.Infrastructure.Data;
 using HealthCareApi2.Domain.Entities;
 using HealthCareApi2.Application.Repositories;
 namespace HealthCareApi2.Infrastructure.Repositories;
@@ -9,44 +10,44 @@ public class PatientRepository : IPatientRepository
     {
         this.context = context;
     }
-    public void AddPatient(Patient patient)
+    public async Task AddPatientAsync(Patient patient, CancellationToken ct = default)
     {
         context.Patients.Add(patient);
-        context.SaveChanges();
+        await context.SaveChangesAsync(ct);
     }
-    public Patient? GetPatientById(int Id)
+    public async Task <Patient?> GetPatientByIdAsync(int Id,CancellationToken ct = default )
     {
-        return context.Patients.Find(Id);
+        return await context.Patients.FindAsync(Id, ct);
     }
-    public Patient? GetPatientByPhone(string phone)
+    public async Task <Patient?> GetPatientByPhoneAsync(string phone, CancellationToken ct = default)
     {
-        return context.Patients.FirstOrDefault(p => p.Phone == phone);
+        return await context.Patients.FirstOrDefaultAsync(p => p.Phone == phone, ct);
     }
-    public List<Patient> GetPatients()
+    public async Task <List<Patient>> GetPatientsAsync(CancellationToken ct = default)
     {
-        return context.Patients.ToList();
+        return await context.Patients.AsNoTracking().ToListAsync();
     }
-    public void UpdatePatient(Patient patient)
+    public async Task UpdatePatientAsync(Patient patient, CancellationToken ct = default)
     {
-        var existingPatient = context.Patients.Find(patient.Id)!;
+        var existingPatient = (await context.Patients.FindAsync(patient.Id, ct))!;
 
 
             existingPatient.Name = patient.Name;
             existingPatient.Age = patient.Age;
             existingPatient.Phone = patient.Phone;
 
-            context.SaveChanges();
+           await context.SaveChangesAsync(ct);
      
         
     }
-    public void DeletePatient(Patient patient)
+    public async Task DeletePatientAsync(Patient patient, CancellationToken ct = default)
     {
        
 
     
         {
             context.Patients.Remove(patient);
-            var changes = context.SaveChanges();
+            await context.SaveChangesAsync(ct);
             
 
 

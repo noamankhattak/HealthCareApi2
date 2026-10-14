@@ -12,65 +12,61 @@ public class PatientService : IPatientService
     {
         this.patientRepository = patientRepository;
     }
-    public string CreatePatient(Patient patient)
+    public async Task CreatePatientAsync(Patient patient, CancellationToken ct = default)
     {
-        var existingPatient =
-        patientRepository.GetPatientByPhone(patient.Phone);
+        var existingPatient = await patientRepository.GetPatientByPhoneAsync(patient.Phone, ct);
 
         if (existingPatient != null)
         {
             throw new PatientAlreadyExistsException(patient.Phone);
         }
-        patientRepository.AddPatient(patient);
+          await patientRepository.AddPatientAsync(patient, ct);
 
-        return $"Patient created: {patient.Name}, Age: {patient.Age}";
+        
     }
-    public List<Patient> GetPatients()
+    public async Task <List<Patient>> GetPatientsAsync(CancellationToken ct = default)
     {
-        return patientRepository.GetPatients();
+         return await patientRepository.GetPatientsAsync(ct);
     }
-    public void  UpdatePatient(Patient patient)
+    public async Task  UpdatePatientAsync(Patient patient,CancellationToken ct = default)
     {
-        var existing = patientRepository.GetPatientById(patient.Id);
+        var existing = await patientRepository.GetPatientByIdAsync(patient.Id, ct);
 
         if (existing == null)
         {
             throw new PatientNotFoundException(patient.Id);
         }
 
-        var samephone = patientRepository.GetPatientByPhone(patient.Phone);
+        var samephone = await patientRepository.GetPatientByPhoneAsync(patient.Phone, ct);
         
         if (samephone != null && samephone.Id != patient.Id)
         {
             throw new PatientAlreadyExistsException(patient.Phone);
         }
-        patientRepository.UpdatePatient(patient);
+        await patientRepository.UpdatePatientAsync(patient, ct);
     }
 
-    public Patient GetPatientById(int Id)
+    public async Task <Patient> GetPatientByIdAsync(int Id,CancellationToken ct = default)
     {
-        var patient = patientRepository.GetPatientById(Id);
+         var patient = await patientRepository.GetPatientByIdAsync(Id, ct);
 
         if (patient == null)
         {
             throw new PatientNotFoundException(Id);
         }
-
         return patient;
+         
     }
-    public void DeletePatient(int Id)
+    public async Task DeletePatientAsync(int Id, CancellationToken ct = default)
     {
-        var patient = patientRepository.GetPatientById(Id);
+        var patient = await patientRepository.GetPatientByIdAsync(Id, ct);
 
         if (patient == null)
         {
             throw new PatientNotFoundException(Id);
         }
-        else
-        {
-            patientRepository.DeletePatient(patient);
+        
+           await patientRepository.DeletePatientAsync(patient,ct);
 
-           
-        }
     }
 }

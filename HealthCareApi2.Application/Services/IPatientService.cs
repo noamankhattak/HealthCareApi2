@@ -3,9 +3,9 @@ namespace HealthCareApi2.Application.Services;
 
 public interface IPatientService
 {
-    string CreatePatient(Patient patient);
-    List<Patient> GetPatients();
-    void UpdatePatient(Patient patient);
-    Patient GetPatientById(int Id);
-    void DeletePatient(int Id);
+    Task CreatePatientAsync(Patient patient, CancellationToken ct = default);
+    Task <List<Patient>> GetPatientsAsync(CancellationToken ct = default);
+    Task UpdatePatientAsync(Patient patient, CancellationToken ct = default);
+    Task <Patient> GetPatientByIdAsync(int Id, CancellationToken ct = default);
+    Task DeletePatientAsync(int Id, CancellationToken ct = default);
 }
