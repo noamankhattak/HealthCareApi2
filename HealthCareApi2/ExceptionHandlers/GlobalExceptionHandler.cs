@@ -46,5 +46,5 @@ public class GlobalExceptionHandler : IExceptionHandler
         PatientHasAppointmentsException => (StatusCodes.Status409Conflict, "Patient has appointments."),
         InvalidAppointmentTimeException => (StatusCodes.Status400BadRequest, "Invalid appointment time."),
         _ => null
-    };
+    }; 
 }
