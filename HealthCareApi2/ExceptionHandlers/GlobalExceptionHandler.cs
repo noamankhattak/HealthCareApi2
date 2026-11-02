@@ -15,55 +15,36 @@ public class GlobalExceptionHandler : IExceptionHandler
     }
 
     public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext,
-        Exception exception,
-        CancellationToken cancellationToken)
+      HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        if (exception is PatientNotFoundException)
+        var mapped = Map(exception);
+        if (mapped is null)
+            return false;                                  // unknown: framework sends a generic 500
+
+        var (status, title) = mapped.Value;
+
+        logger.LogWarning(exception, "{Title}", title);
+
+        httpContext.Response.StatusCode = status;
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
         {
-            logger.LogWarning(
-                exception,
-                "Patient was not found.");
+            Status = status,
+            Title = title,
+            Detail = exception.Message
+        }, cancellationToken);
 
-            var problemDetails = new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Patient not found.",
-                Detail = exception.Message
-            };
-
-            httpContext.Response.StatusCode =
-                StatusCodes.Status404NotFound;
-
-            await httpContext.Response.WriteAsJsonAsync(
-                problemDetails,
-                cancellationToken);
-
-            return true;
-        }
-        if (exception is PatientAlreadyExistsException)
-        {
-            logger.LogWarning(
-                exception,
-                "Attempted to create a patient that already exists.");
-
-            var problemDetails = new ProblemDetails
-            {
-                Status = StatusCodes.Status409Conflict,
-                Title = "Patient already exists.",
-                Detail = exception.Message
-            };
-
-            httpContext.Response.StatusCode =
-                StatusCodes.Status409Conflict;
-
-            await httpContext.Response.WriteAsJsonAsync(
-                problemDetails,
-                cancellationToken);
-
-            return true;
-        }
-
-        return false;
+        return true;
     }
+
+    private static (int Status, string Title)? Map(Exception exception) => exception switch
+    {
+        PatientNotFoundException => (StatusCodes.Status404NotFound, "Patient not found."),
+        DoctorNotFoundException => (StatusCodes.Status404NotFound, "Doctor not found."),
+        AppointmentNotFoundException => (StatusCodes.Status404NotFound, "Appointment not found."),
+        PatientAlreadyExistsException => (StatusCodes.Status409Conflict, "Patient already exists."),
+        AppointmentConflictException => (StatusCodes.Status409Conflict, "Appointment time is already booked."),
+        PatientHasAppointmentsException => (StatusCodes.Status409Conflict, "Patient has appointments."),
+        InvalidAppointmentTimeException => (StatusCodes.Status400BadRequest, "Invalid appointment time."),
+        _ => null
+    }; 
 }

@@ -1,7 +1,7 @@
 ﻿using HealthCareApi2.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
+namespace HealthCareApi2.Infrastructure.Data.Configurations;
 public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
 {
     public void Configure(EntityTypeBuilder<Appointment> builder)

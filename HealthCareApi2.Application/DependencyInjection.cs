@@ -9,6 +9,8 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddScoped<IPatientService, PatientService>();
+        services.AddScoped<IDoctorService, DoctorService>();
+        services.AddScoped<IAppointmentService, AppointmentService>();
 
         return services;
     }
